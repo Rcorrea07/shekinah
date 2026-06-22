@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import type { PrayerRequest } from "../types/domain";
 
 export type PrayerRequestRow = {
@@ -41,12 +42,11 @@ export type Database = {
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-if (!supabaseUrl) {
-  throw new Error("Missing VITE_SUPABASE_URL environment variable.");
-}
+export const supabaseConfigError =
+  !supabaseUrl || !supabaseAnonKey
+    ? "Configure VITE_SUPABASE_URL e VITE_SUPABASE_ANON_KEY nas variáveis de ambiente."
+    : null;
 
-if (!supabaseAnonKey) {
-  throw new Error("Missing VITE_SUPABASE_ANON_KEY environment variable.");
-}
-
-export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey);
+export const supabase: SupabaseClient<Database> | null = supabaseConfigError
+  ? null
+  : createClient<Database>(supabaseUrl, supabaseAnonKey);

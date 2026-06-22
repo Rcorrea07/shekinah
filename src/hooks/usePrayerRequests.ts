@@ -1,6 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 import { mockPrayerRequests } from "../data/mockData";
-import { supabase, type PrayerRequestRow } from "../lib/supabaseClient";
+import {
+  supabase,
+  supabaseConfigError,
+  type PrayerRequestRow,
+} from "../lib/supabaseClient";
 import type { PrayerRequest } from "../types/domain";
 
 const USER_NAME_STORAGE_KEY = "shekinah_user_name";
@@ -230,6 +234,13 @@ export function usePrayerRequests() {
   const fetchPrayerRequests = useCallback(async () => {
     setIsLoading(true);
 
+    if (!supabase) {
+      setError(supabaseConfigError);
+      setPrayerRequests((currentRequests) => mergePrayerRequests([], currentRequests));
+      setIsLoading(false);
+      return;
+    }
+
     const { data, error: fetchError } = await supabase
       .from("prayer_requests")
       .select("*");
@@ -249,7 +260,12 @@ export function usePrayerRequests() {
   useEffect(() => {
     void fetchPrayerRequests();
 
-    const channel = supabase
+    if (!supabase) {
+      return undefined;
+    }
+
+    const supabaseClient = supabase;
+    const channel = supabaseClient
       .channel("prayer_requests_changes")
       .on(
         "postgres_changes",
@@ -269,7 +285,7 @@ export function usePrayerRequests() {
       });
 
     return () => {
-      void supabase.removeChannel(channel);
+      void supabaseClient.removeChannel(channel);
     };
   }, [fetchPrayerRequests]);
 
@@ -332,6 +348,11 @@ export function usePrayerRequests() {
         category: requestCategory,
       } satisfies PrayerRequest;
 
+      if (!supabase) {
+        setError(supabaseConfigError);
+        return false;
+      }
+
       const { data, error: insertError } = await supabase
         .from("prayer_requests")
         .insert(toSupabaseInsert(newPrayerRequest))
@@ -373,6 +394,12 @@ export function usePrayerRequests() {
           request.id === id ? { ...request, prayingCount: nextPrayingCount } : request,
         ),
       );
+      return;
+    }
+
+    if (!supabase) {
+      setError(supabaseConfigError);
+      removePrayedRequestId(id);
       return;
     }
 

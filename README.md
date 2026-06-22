@@ -125,6 +125,25 @@ O app usa rotas reais com React Router, então o usuário pode atualizar a pági
 | `/avisos` | Agenda e avisos da célula |
 | `/testemunhos` | Testemunhos e relatos |
 
+## Deploy Na Vercel
+
+Na Vercel, cadastre as variáveis de ambiente antes de fazer o deploy:
+
+```txt
+VITE_SUPABASE_URL
+VITE_SUPABASE_ANON_KEY
+```
+
+Caminho no painel da Vercel:
+
+```txt
+Project > Settings > Environment Variables
+```
+
+Depois de adicionar ou alterar variáveis, faça um novo deploy.
+
+O projeto também possui um `vercel.json` com rewrite para `index.html`, garantindo que rotas como `/oracoes` e `/testemunhos` funcionem ao atualizar a página.
+
 ## Scripts Disponíveis
 
 ```bash
