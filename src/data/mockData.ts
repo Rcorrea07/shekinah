@@ -146,7 +146,7 @@ export const mockDevotional: Devotional = {
 export const mockTestimonies: Testimony[] = [
   {
     id: "testimony-1",
-    author: "Rafa",
+    author: "Anônimo",
     content:
       "Depois do último encontro, consegui conversar com minha mãe com calma. Foi pequeno, mas senti Deus abrindo uma porta de reconciliação.",
     date: "2026-06-08T12:00:00-03:00",
