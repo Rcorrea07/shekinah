@@ -85,11 +85,6 @@ export const mockEvents: EventItem[] = [
       "Culto temático da copa!!! Venha com a camiseta do seu time ou da seleção brasileira para adorar a Deus juntos nesse clima de copa do mundo.",
     actions: [
       {
-        label: "Copiar Pix",
-        kind: "copyPix",
-        value: "pix-shekinah@exemplo.com",
-      },
-      {
         label: "Ver detalhes",
         kind: "details",
       },

@@ -14,12 +14,11 @@ export type PrayerRequest = {
   category: "familia" | "saude" | "direcao" | "gratidao" | "outro";
 };
 
-export type EventActionKind = "calendar" | "copyPix" | "details";
+export type EventActionKind = "calendar" | "details";
 
 export type EventAction = {
   label: string;
   kind: EventActionKind;
-  value?: string;
 };
 
 export type EventItem = {

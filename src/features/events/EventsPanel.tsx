@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CalendarPlus, Clock, Copy, ExternalLink, MapPin } from "lucide-react";
+import { CalendarPlus, Clock, ExternalLink, MapPin } from "lucide-react";
 import { Badge } from "../../components/ui/Badge";
 import { Button } from "../../components/ui/Button";
 import { Card } from "../../components/ui/Card";
@@ -12,22 +12,11 @@ type EventsPanelProps = {
 };
 
 export function EventsPanel({ events }: EventsPanelProps) {
-  const [copiedEventId, setCopiedEventId] = useState<string | null>(null);
   const [expandedEventId, setExpandedEventId] = useState<string | null>(null);
 
-  const handleAction = async (eventItem: EventItem, action: EventAction) => {
+  const handleAction = (eventItem: EventItem, action: EventAction) => {
     if (action.kind === "calendar") {
       window.open(createCalendarLink(eventItem), "_blank", "noopener,noreferrer");
-      return;
-    }
-
-    if (action.kind === "copyPix" && action.value) {
-      await navigator.clipboard.writeText(action.value);
-      setCopiedEventId(eventItem.id);
-      window.setTimeout(
-        () => setCopiedEventId((current) => (current === eventItem.id ? null : current)),
-        1600,
-      );
       return;
     }
 
@@ -75,11 +64,9 @@ export function EventsPanel({ events }: EventsPanelProps) {
                   size="sm"
                   variant={action.kind === "calendar" ? "primary" : "secondary"}
                   icon={getActionIcon(action.kind)}
-                  onClick={() => void handleAction(eventItem, action)}
+                  onClick={() => handleAction(eventItem, action)}
                 >
-                  {action.kind === "copyPix" && copiedEventId === eventItem.id
-                    ? "Pix copiado"
-                    : action.label}
+                  {action.label}
                 </Button>
               ))}
             </div>
@@ -108,10 +95,6 @@ function Meta({
 function getActionIcon(kind: EventAction["kind"]) {
   if (kind === "calendar") {
     return <CalendarPlus className="size-4" strokeWidth={1.8} />;
-  }
-
-  if (kind === "copyPix") {
-    return <Copy className="size-4" strokeWidth={1.8} />;
   }
 
   return <ExternalLink className="size-4" strokeWidth={1.8} />;
